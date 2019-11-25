@@ -21,7 +21,7 @@ public class JmxInterfaceBean {
     @ManagedOperation
     public String cmd(String command) throws IOException {
         ServerCommand cmd=json.readValue(command, ServerCommand.class);
-        ServerCommandResponse response=commandProcessor.process(cmd);
+        ServerCommandResponse response= commandProcessor.process(cmd);
         return json.writeValueAsString(response);
     }
 }

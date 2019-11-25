@@ -14,8 +14,8 @@ import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 
 @ShellComponent
-public class QuoteCommand {
-    private Logger log= LoggerFactory.getLogger(QuoteCommand.class);
+public class RemoteQuoteCommand {
+    private Logger log= LoggerFactory.getLogger(RemoteQuoteCommand.class);
 
     @Autowired
     private OutputPrinter out;
