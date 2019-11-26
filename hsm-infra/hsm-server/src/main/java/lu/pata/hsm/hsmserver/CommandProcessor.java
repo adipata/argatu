@@ -6,6 +6,8 @@ import lu.pata.hsm.hsmserver.services.QuoteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -18,10 +20,12 @@ public class CommandProcessor {
     public ServerCommandResponse process (ServerCommand command){
         ServerCommandResponse response=new ServerCommandResponse();
 
+        String user=((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
+        log.info("Processing command "+command.getServerCommandType().name()+" for "+user);
+
         try {
             switch (command.getServerCommandType()) {
                 case GET_QUOTE:
-                    //response.setData(((UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername());
                     response.setData(quoteService.getQuote());
                     break;
                 default:

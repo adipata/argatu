@@ -14,12 +14,11 @@ import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 
 import javax.naming.InvalidNameException;
-import javax.naming.ldap.LdapName;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigInteger;
-import java.security.cert.Certificate;
+import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
@@ -92,6 +91,20 @@ public class LocalHsmCommand {
     public void list() throws PKCS11Exception {
         if(!pkcsManager.isHsmInitialized()) if(!tryHsmInit()) return;
         pkcsManager.listObjects();
+    }
+
+    @ShellMethod("Test PKCS11 java")
+    public void jcert() throws KeyStoreException, CertificateException, NoSuchAlgorithmException, IOException {
+        Provider prototype = Security.getProvider("SunPKCS11");
+        Provider provider = prototype.configure("pkcs11.txt");
+
+        KeyStore ks=KeyStore.getInstance("PKCS11",provider);
+        ks.load(null, "123456".toCharArray());
+        for (Iterator<String> it = ks.aliases().asIterator(); it.hasNext(); ) {
+            String a = it.next();
+            out.print(a);
+        }
+
     }
 
     private boolean tryHsmInit(){

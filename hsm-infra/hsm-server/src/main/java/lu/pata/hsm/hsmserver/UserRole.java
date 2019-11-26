@@ -4,7 +4,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 public enum UserRole implements GrantedAuthority {
     ADMIN(Code.ADMIN,"kms-admin"),
-    USER(Code.USER,"kms-user");
+    USER(Code.USER,"quote-usr");
 
     private final String authority;
     private final String issuer;

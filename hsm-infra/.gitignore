@@ -1,3 +1,5 @@
 *.jks
 *.csr
 *.p7r
+*.txt
+*.cer
