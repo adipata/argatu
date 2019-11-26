@@ -21,12 +21,16 @@ public class Tools {
         return attributes.keySet();
     }
 
-    public CK_ATTRIBUTE[] getTemplate(String attribute){
+    public CK_ATTRIBUTE[] getTemplate(String... attrs){
         CK_ATTRIBUTE a;
-        CK_ATTRIBUTE[] t=new CK_ATTRIBUTE[1];
-        a=new CK_ATTRIBUTE();
-        a.type=attributes.get(attribute);
-        t[0]=a;
+        CK_ATTRIBUTE[] t=new CK_ATTRIBUTE[attrs.length];
+        int i=0;
+        for(String attr:attrs) {
+            a = new CK_ATTRIBUTE();
+            a.type = attributes.get(attr);
+            t[i] = a;
+            i++;
+        }
 
         return t;
     }
@@ -36,6 +40,10 @@ public class Tools {
             if(classes.get(k).equals(v)) return k;
         }
         return "N/A";
+    }
+
+    public Long getClassCode(String objClass){
+        return classes.get(objClass);
     }
 
     public String getKeyType(Long v){

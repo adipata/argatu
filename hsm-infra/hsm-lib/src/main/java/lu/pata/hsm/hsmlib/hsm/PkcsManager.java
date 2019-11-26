@@ -14,6 +14,7 @@ import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.RSAPublicKeySpec;
+import java.util.Random;
 
 public class PkcsManager {
     private Logger log= LoggerFactory.getLogger(PkcsManager.class);
@@ -49,14 +50,15 @@ public class PkcsManager {
         return hsmInitialized;
     }
 
-    public Long getObjByLabel(String label) throws PKCS11Exception {
-        long startTime = System.currentTimeMillis();
-        CK_ATTRIBUTE[] template=tool.getTemplate("CKA_LABEL");
-        template[0].pValue=label.toCharArray();
+    public Long getObjByLabelAndClass(String objLabel,String objClass) throws PKCS11Exception {
+        CK_ATTRIBUTE[] template=tool.getTemplate("CKA_LABEL","CKA_CLASS");
+        template[0].pValue=objLabel.toCharArray();
+        template[1].pValue=tool.getClassCode(objClass);
+
         pkcs11.C_FindObjectsInit(ses,template,false);
         long[] objs=pkcs11.C_FindObjects(ses,100);
         pkcs11.C_FindObjectsFinal(ses);
-        //log.info("HSM: get object "+label+":"+(System.currentTimeMillis()-startTime));
+
         if(objs.length>0)
             return objs[0];
         else
@@ -79,7 +81,11 @@ public class PkcsManager {
         return template[0].pValue;
     }
 
-    public long[] generateKeyPair(String label,byte[] id) throws PKCS11Exception {
+    public long[] generateKeyPair(String label) throws PKCS11Exception {
+        Random rnd=new Random();
+        byte[] id=new byte[10];
+        rnd.nextBytes(id);
+
         CK_MECHANISM m=new CK_MECHANISM();
         m.mechanism= PKCS11Constants.CKM_RSA_PKCS_KEY_PAIR_GEN;
 
@@ -99,6 +105,14 @@ public class PkcsManager {
         a=new CK_ATTRIBUTE();a.type=PKCS11Constants.CKA_ID;a.pValue=id;pubt[3]=a;
 
         return pkcs11.C_GenerateKeyPair(ses,m,pubt,privt,false);
+    }
+
+    public byte[] signData(Long key,byte[] data) throws PKCS11Exception {
+        CK_MECHANISM m=new CK_MECHANISM();
+        m.mechanism= PKCS11Constants.CKM_SHA256_RSA_PKCS;
+
+        pkcs11.C_SignInit(ses,m,key,false);
+        return pkcs11.C_Sign(ses,data);
     }
 
     public RSAPublicKey getPublicKey(int id) throws PKCS11Exception, NoSuchAlgorithmException, InvalidKeySpecException {
