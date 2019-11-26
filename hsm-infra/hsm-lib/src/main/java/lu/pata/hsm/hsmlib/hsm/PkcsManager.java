@@ -126,7 +126,7 @@ public class PkcsManager {
         return key;
     }
 
-    public void uploadCertificate(X509Certificate cert, String label, String id) throws PKCS11Exception, CertificateEncodingException {
+    public void uploadCertificate(X509Certificate cert, String label, byte[] id) throws PKCS11Exception, CertificateEncodingException {
         CK_ATTRIBUTE[] certificate = new CK_ATTRIBUTE[10];
 
         CK_ATTRIBUTE a;
@@ -134,7 +134,7 @@ public class PkcsManager {
         a=new CK_ATTRIBUTE();a.type=PKCS11Constants.CKA_CLASS;a.pValue=PKCS11Constants.CKO_CERTIFICATE; certificate[0] = a;
         a=new CK_ATTRIBUTE();a.type=PKCS11Constants.CKA_TOKEN;a.pValue=true; certificate[1] = a;
         a=new CK_ATTRIBUTE();a.type=PKCS11Constants.CKA_SUBJECT;a.pValue=cert.getSubjectX500Principal().getEncoded(); certificate[2] = a;
-        a=new CK_ATTRIBUTE();a.type=PKCS11Constants.CKA_ID;a.pValue= Hex.decode(id); certificate[3] = a;
+        a=new CK_ATTRIBUTE();a.type=PKCS11Constants.CKA_ID;a.pValue= id; certificate[3] = a;
         a=new CK_ATTRIBUTE();a.type=PKCS11Constants.CKA_VALUE;a.pValue=cert.getEncoded(); certificate[4] = a;
         a=new CK_ATTRIBUTE();a.type=PKCS11Constants.CKA_PRIVATE;a.pValue=false; certificate[5] = a;
         a=new CK_ATTRIBUTE();a.type=PKCS11Constants.CKA_LABEL;a.pValue=label.toCharArray(); certificate[6] = a;
