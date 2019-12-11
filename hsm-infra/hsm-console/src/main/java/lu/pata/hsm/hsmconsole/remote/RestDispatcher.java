@@ -5,7 +5,6 @@ import lu.pata.hsm.hsmlib.ServerCommandResponse;
 import org.apache.http.conn.ssl.*;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.opensc.pkcs11.PKCS11Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -64,7 +63,7 @@ public class RestDispatcher implements CommandDispatcher {
         //KeyStore clientStore=KeyStore.getInstance("JKS");
         //clientStore.load(new FileInputStream("data/users.jks"),"".toCharArray());
 
-        PKCS11Provider padi=new PKCS11Provider("e:\\kit\\SecurityServerEvaluation-V4.30.1.2\\Software\\Windows\\x86-64\\Crypto_APIs\\PKCS11_R2\\lib\\cs_pkcs11_R2.dll");
+        //PKCS11Provider padi=new PKCS11Provider("e:\\kit\\SecurityServerEvaluation-V4.30.1.2\\Software\\Windows\\x86-64\\Crypto_APIs\\PKCS11_R2\\lib\\cs_pkcs11_R2.dll");
         //Security.addProvider(padi);
 
         Provider prototype = Security.getProvider("SunPKCS11");
@@ -72,7 +71,7 @@ public class RestDispatcher implements CommandDispatcher {
         Security.addProvider(provider);
 
         KeyStore clientStore=KeyStore.getInstance("PKCS11",provider);
-        clientStore.load(null, "123456".toCharArray());
+        clientStore.load(null, "418214".toCharArray());
 
         KeyStore trusted=KeyStore.getInstance("JKS");
         trusted.load(new FileInputStream("data/trusted.jks"),"".toCharArray());
