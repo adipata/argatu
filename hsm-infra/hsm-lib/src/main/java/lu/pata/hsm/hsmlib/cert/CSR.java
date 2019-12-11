@@ -58,7 +58,7 @@ public class CSR {
         return new DERSequence(cn_set);
     }
 
-    private DERSequence subjectPKInfo(){
+    private DERSequence subjectPKInfo() throws IOException {
         DERObjectIdentifier pki_oid=new DERObjectIdentifier("1.2.840.113549.1.1.1"); //RSA
         DERNull der_null=new DERNull();
         DERSequence algorithm=new DERSequence(seqASN1Encodables(pki_oid,der_null));

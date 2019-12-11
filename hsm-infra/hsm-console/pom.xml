@@ -15,7 +15,7 @@
     <description>Console to manage the hsm-server</description>
 
     <properties>
-        <java.version>11</java.version>
+        <java.version>13</java.version>
     </properties>
 
     <dependencies>
@@ -62,11 +62,13 @@
             <artifactId>commons-codec</artifactId>
             <version>1.13</version>
         </dependency>
+        <!--
         <dependency>
             <groupId>pkcs11j</groupId>
             <artifactId>pkcs11j</artifactId>
             <version>1.0.0</version>
         </dependency>
+        -->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

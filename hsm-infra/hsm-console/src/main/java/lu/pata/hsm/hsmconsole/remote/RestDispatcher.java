@@ -2,12 +2,10 @@ package lu.pata.hsm.hsmconsole.remote;
 
 import lu.pata.hsm.hsmlib.ServerCommand;
 import lu.pata.hsm.hsmlib.ServerCommandResponse;
-import org.apache.http.conn.ssl.PrivateKeyDetails;
-import org.apache.http.conn.ssl.PrivateKeyStrategy;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLContextBuilder;
+import org.apache.http.conn.ssl.*;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.opensc.pkcs11.PKCS11Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -34,6 +32,16 @@ public class RestDispatcher implements CommandDispatcher {
         this.pass=password;
     }
 
+    public ServerCommandResponse cmd_tmp(ServerCommand command) {
+        ServerCommandResponse resp=null;
+        try {
+            RestTest.test();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return resp;
+    }
+
     @Override
     public ServerCommandResponse cmd(ServerCommand command) {
         ServerCommandResponse resp;
@@ -53,8 +61,18 @@ public class RestDispatcher implements CommandDispatcher {
     private RestTemplate restTemplate(String user,String pass) throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException, UnrecoverableKeyException, KeyManagementException {
         if(user==null || pass==null) throw new KeyManagementException("Cannot load keys for remote access. Please provide username and password.");
 
-        KeyStore clientStore=KeyStore.getInstance("JKS");
-        clientStore.load(new FileInputStream("data/users.jks"),"".toCharArray());
+        //KeyStore clientStore=KeyStore.getInstance("JKS");
+        //clientStore.load(new FileInputStream("data/users.jks"),"".toCharArray());
+
+        PKCS11Provider padi=new PKCS11Provider("e:\\kit\\SecurityServerEvaluation-V4.30.1.2\\Software\\Windows\\x86-64\\Crypto_APIs\\PKCS11_R2\\lib\\cs_pkcs11_R2.dll");
+        //Security.addProvider(padi);
+
+        Provider prototype = Security.getProvider("SunPKCS11");
+        Provider provider = prototype.configure("pkcs11.txt");
+        Security.addProvider(provider);
+
+        KeyStore clientStore=KeyStore.getInstance("PKCS11",provider);
+        clientStore.load(null, "123456".toCharArray());
 
         KeyStore trusted=KeyStore.getInstance("JKS");
         trusted.load(new FileInputStream("data/trusted.jks"),"".toCharArray());

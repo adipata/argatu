@@ -20,10 +20,17 @@
             <artifactId>jackson-core</artifactId>
             <version>2.10.0</version>
         </dependency>
+        <!--
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcpkix-jdk15on</artifactId>
-            <version>1.47</version>
+            <version>1.64</version>
+        </dependency>
+        -->
+        <dependency>
+            <groupId>lu.pata.bc</groupId>
+            <artifactId>pkix</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>pkcs11j</groupId>
@@ -49,8 +56,8 @@
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>11</source>
-                    <target>11</target>
+                    <source>13</source>
+                    <target>13</target>
                 </configuration>
             </plugin>
         </plugins>

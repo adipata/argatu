@@ -4,3 +4,7 @@ target
 mvnw*
 *.log
 hsm-access-manager
+bc-java
+ocf
+opensc-java
+tls

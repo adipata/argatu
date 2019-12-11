@@ -5,6 +5,7 @@ import lu.pata.hsm.hsmconsole.config.InputReader;
 import lu.pata.hsm.hsmconsole.config.OutputPrinter;
 import lu.pata.hsm.hsmlib.cert.CSR;
 import lu.pata.hsm.hsmlib.hsm.PkcsManager;
+import org.apache.commons.codec.binary.Hex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,15 +95,26 @@ public class LocalHsmCommand {
     }
 
     @ShellMethod("Test PKCS11 java")
-    public void jcert() throws KeyStoreException, CertificateException, NoSuchAlgorithmException, IOException {
+    public void jcert() throws KeyStoreException, CertificateException, NoSuchAlgorithmException, IOException, UnrecoverableKeyException, InvalidKeyException, SignatureException {
         Provider prototype = Security.getProvider("SunPKCS11");
         Provider provider = prototype.configure("pkcs11.txt");
+        Security.addProvider(provider);
 
-        KeyStore ks=KeyStore.getInstance("PKCS11",provider);
+        KeyStore ks=KeyStore.getInstance("PKCS11");
         ks.load(null, "123456".toCharArray());
         for (Iterator<String> it = ks.aliases().asIterator(); it.hasNext(); ) {
             String a = it.next();
             out.print(a);
+            PrivateKey key = (PrivateKey) ks.getKey(a, null);
+            out.print(key.getAlgorithm());
+
+            byte[] data = "test".getBytes("UTF8");
+
+            Signature sig = Signature.getInstance("SHA1WithRSA");
+            sig.initSign(key);
+            sig.update(data);
+            byte[] signatureBytes = sig.sign();
+            out.print(Hex.encodeHexString(signatureBytes));
         }
 
     }

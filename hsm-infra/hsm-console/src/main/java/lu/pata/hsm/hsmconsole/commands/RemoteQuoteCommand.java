@@ -37,4 +37,11 @@ public class RemoteQuoteCommand {
             log.error(r.getErrorMessage());
         }
     }
+
+    @ShellMethod("Login to local HSM")
+    public void login(){
+        String user=in.prompt("Enter user","",true);
+        String pass=in.prompt("Enter PIN","",false);
+        dispatcher.setUser(user,pass);
+    }
 }
