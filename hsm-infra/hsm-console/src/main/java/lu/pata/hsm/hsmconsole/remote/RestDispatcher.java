@@ -23,6 +23,7 @@ public class RestDispatcher implements CommandDispatcher {
     private Logger log=LoggerFactory.getLogger(RestDispatcher.class);
     private String user;
     private String pass;
+    private RestTemplate rt;
 
 
     @Override
@@ -45,8 +46,8 @@ public class RestDispatcher implements CommandDispatcher {
     public ServerCommandResponse cmd(ServerCommand command) {
         ServerCommandResponse resp;
         try {
-            RestTemplate t=restTemplate(user,pass);
-            resp=t.postForObject("https://localhost:8443/cmd",command,ServerCommandResponse.class);
+            if(rt==null) rt=restTemplate(user,pass);
+            resp=rt.postForObject("https://localhost:8443/cmd",command,ServerCommandResponse.class);
         } catch (KeyStoreException | CertificateException | KeyManagementException | UnrecoverableKeyException | NoSuchAlgorithmException | IOException e) {
             resp=new ServerCommandResponse();
             resp.setIsError(true);
